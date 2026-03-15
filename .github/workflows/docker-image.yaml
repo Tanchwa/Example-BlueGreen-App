@@ -1,0 +1,33 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.'
+  workflow_dispatch:
+  
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build the Docker image
+        working-directory: .
+        run: docker build . --file Dockerfile --tag docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
+
+      - name: Run Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 #v0.35.0 using Trivy v0.69.3
+        with:
+          image-ref: 'docker.io/tanchwa/blue-green-app-test:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+          vuln-type: 'os,library'
+
+      - name: Push the Docker image
+        run: docker login -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
