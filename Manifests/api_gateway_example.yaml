@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: example-blue-green-app
+  name: example-blue-green-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: example-blue-green-app
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: example-blue-green-app
+    spec:
+      containers:
+        - image: tanchwa/blue-green-app-test:SHASUMGOESHERE
+          name: blue-green-app-test
+          ports:
+            - containerPort: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: external-https-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  gatewayClassName: gke-l7-global-external-managed   # already exists, just reference it
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: "blue-green.andrewsutliff.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: example-blue-green-app
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: my-app-route
+  namespace: my-app
+spec:
+  parentRefs:
+  - name: external-https-gateway
+    namespace: infra
+    sectionName: https
+  hostnames:
+  - "blue-green.andrewsutliff.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: example-blue-green-app
+      port: 8080
