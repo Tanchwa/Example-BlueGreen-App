@@ -62,7 +62,7 @@ metadata:
 spec:
   parentRefs:
   - name: external-https-gateway
-    namespace: infra
+    namespace: blue-green
     sectionName: https
   hostnames:
   - "blue-green.andrewsutliff.com"
