@@ -19,6 +19,12 @@ jobs:
 
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Black Duck Scan
+        working-directory: .
+        uses: blackduck-inc/black-duck-security-scan@fc62af1caf438f414186baabbb779697e53cccef #v2.8.0
+        with:
+          include_diagnostics: true
+
       - name: Build Docker Image
         working-directory: .
         run: docker build . --file Dockerfile --tag docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
