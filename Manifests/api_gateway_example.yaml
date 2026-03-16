@@ -41,7 +41,7 @@ kind: Gateway
 metadata:
   name: external-https-gateway
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: cloudflare-issuer
 spec:
   gatewayClassName: gke-l7-global-external-managed   # already exists, just reference it
   listeners:
