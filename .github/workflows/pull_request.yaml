@@ -11,6 +11,9 @@ on:
 
 jobs:
   build_and_scan_image:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
 
