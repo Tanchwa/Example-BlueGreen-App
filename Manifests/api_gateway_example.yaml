@@ -24,7 +24,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - image: tanchwa/blue-green-app-test:SHASUMGOESHERE
+        - image: tanchwa/blue-green-app-test@sha256:f45d2c1a61d69452ab67c7984cd35869f69ae1fc7cb491fe35b130b1e3446531
           imagePullPolicy: Always
           name: blue-green-app-test
           securityContext:
