@@ -1,21 +1,24 @@
 name: Docker Image CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
-    paths:
-      - '.'
-  workflow_dispatch:
-  
+      - '*'
+      - '!main'
+  pull_request:
+    types:
+      - closed
+
+
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v3
+      - uses:  actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Build the Docker image
         working-directory: .
         run: docker build . --file Dockerfile --tag docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
@@ -28,6 +31,13 @@ jobs:
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
           vuln-type: 'os,library'
+          output: trivy-report.txt
+
+      - name: Publish Scan as Artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: trivy-scan
+          path: trivy-report.txt
 
       - name: Push the Docker image
         run: docker login -u tanchwa -p ${{ secrets.DOCKER_TOKEN }} && docker push docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
