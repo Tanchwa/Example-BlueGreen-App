@@ -23,6 +23,7 @@ jobs:
         uses: blackduck-inc/black-duck-security-scan@fc62af1caf438f414186baabbb779697e53cccef #v2.8.0
         with:
           include_diagnostics: true
+          blackducksca_url: https://your-blackduck-server.com
 
       - name: Build Docker Image
         working-directory: .
@@ -38,7 +39,7 @@ jobs:
           vuln-type: 'os,library'
           output: trivy-report.txt
         continue-on-error: true
-        
+
 
       - id: trivy-output
         run: |
