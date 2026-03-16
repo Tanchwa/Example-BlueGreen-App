@@ -99,13 +99,3 @@ spec:
     app: example-blue-green-app
 status:
   loadBalancer: {}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: deny-from-other-namespaces
-  namespace: blue-green
-spec:
-  podSelector: {}
-  policyTypes:
-    - Ingress
