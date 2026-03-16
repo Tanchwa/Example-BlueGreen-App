@@ -20,14 +20,14 @@ jobs:
 
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Black Duck Scan
-        uses: blackduck-inc/black-duck-security-scan@fc62af1caf438f414186baabbb779697e53cccef #v2.8.0
-        with:
-          include_diagnostics: true
-          blackducksca_url: https://your-blackduck-server.com
-          blackduck_token: ${{ secrets.BLACKDUCK_TOKEN }}
+      #- name: Black Duck Scan
+      #  uses: blackduck-inc/black-duck-security-scan@fc62af1caf438f414186baabbb779697e53cccef #v2.8.0
+      #  with:
+      #    include_diagnostics: true
+      #    blackducksca_url: https://your-blackduck-server.com
+      #    blackduck_token: ${{ secrets.BLACKDUCK_TOKEN }}
 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker Image
         working-directory: .
