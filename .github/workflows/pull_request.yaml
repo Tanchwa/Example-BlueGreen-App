@@ -21,7 +21,6 @@ jobs:
         run: docker build . --file Dockerfile --tag docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
 
       - name: Run Trivy Vulnerability Scan
-        id: trivy-scan
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0 using Trivy v0.69.3
         with:
           image-ref: 'docker.io/tanchwa/blue-green-app-test:${{ github.sha }}'
@@ -33,10 +32,9 @@ jobs:
         continue-on-error: true
         
 
-      - run: cat trivy-report.txt
-
-      - run: |
-          echo "trivy_report<<EOF" >> $GITHUB_OUTPUT
+      - id: trivy-output
+        run: |
+          echo "trivy-report<<EOF" >> $GITHUB_OUTPUT
           echo "$(cat trivy-report.txt)" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
@@ -47,5 +45,5 @@ jobs:
             ## Trivy Scan
             ### Trivy Scan Table
             ```plaintext
-            ${{ steps.trivy-scan.outputs.trivy_report }}
+            ${{ steps.trivy-output.outputs.trivy-report }}
             ```
