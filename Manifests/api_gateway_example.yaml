@@ -45,6 +45,12 @@ metadata:
 spec:
   gatewayClassName: gke-l7-global-external-managed   # already exists, just reference it
   listeners:
+  - name: http
+    protocol: HTTP
+    hostname: "blue-green.andrewsutliff.com"
+    allowedRoutes:
+      namespaces:
+        from: All
   - name: https
     protocol: HTTPS
     port: 443
@@ -67,6 +73,11 @@ spec:
   hostnames:
   - "blue-green.andrewsutliff.com"
   rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
   - matches:
     - path:
         type: PathPrefix
