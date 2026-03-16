@@ -47,6 +47,7 @@ spec:
   listeners:
   - name: http
     protocol: HTTP
+    port: 80
     hostname: "blue-green.andrewsutliff.com"
     allowedRoutes:
       namespaces:
