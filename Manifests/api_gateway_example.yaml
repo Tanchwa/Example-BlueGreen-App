@@ -74,3 +74,21 @@ spec:
     backendRefs:
     - name: example-blue-green-app
       port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: example-blue-green-app
+  name: example-blue-green-app
+  namespace: blue-green
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: example-blue-green-app
+status:
+  loadBalancer: {}
