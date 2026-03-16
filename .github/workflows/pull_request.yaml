@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  build_and_scan_image:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Build Docker Image
+        working-directory: .
+        run: docker build . --file Dockerfile --tag docker.io/tanchwa/blue-green-app-test:${{ github.sha }}
+
+      - name: Run Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0 using Trivy v0.69.3
+        with:
+          image-ref: 'docker.io/tanchwa/blue-green-app-test:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+          vuln-type: 'os,library'
+          output: trivy-report.txt
+        continue-on-error: true
+        
+
+      - id: trivy-output
+        run: |
+          echo "trivy-report<<EOF" >> $GITHUB_OUTPUT
+          echo "$(cat trivy-report.txt)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Publish Plan as PR Comment
+        uses: mshick/add-pr-comment@ffd016c7e151d97d69d21a843022fd4cd5b96fe5 # v3.9.0
+        with:
+          message: |
+            ## Trivy Scan
+            ### Trivy Scan Table
+            ```plaintext
+            ${{ steps.trivy-output.outputs.trivy-report }}
+            ```

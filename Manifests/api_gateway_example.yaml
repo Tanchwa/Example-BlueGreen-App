@@ -5,6 +5,7 @@ metadata:
   labels:
     app: example-blue-green-app
   name: example-blue-green-app
+  namespace: blue-green
 spec:
   replicas: 3
   selector:
@@ -16,9 +17,22 @@ spec:
       labels:
         app: example-blue-green-app
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - image: tanchwa/blue-green-app-test:SHASUMGOESHERE
+          imagePullPolicy: Always
           name: blue-green-app-test
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
           ports:
             - containerPort: 8080
 ---

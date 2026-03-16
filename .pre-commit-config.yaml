@@ -3,6 +3,7 @@ repos:
   rev: 1062e319049f50300185fcf082bdeff241c5019c
   hooks:
     - id: checkov
+      files: .
       args:
         - --output=cli
         - --quiet
@@ -12,7 +13,7 @@ repos:
   rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c
   hooks:
     - id: trailing-whitespace
-      args: 
+      args:
         - --markdown-linebreak-ext=md
 
     # end of file fixer broken for terraform docs
