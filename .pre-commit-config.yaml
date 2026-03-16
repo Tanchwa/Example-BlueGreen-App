@@ -3,6 +3,7 @@ repos:
   rev: 1062e319049f50300185fcf082bdeff241c5019c
   hooks:
     - id: checkov
+      files: .
       args:
         - --output=cli
         - --quiet
