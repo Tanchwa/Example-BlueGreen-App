@@ -33,8 +33,10 @@ jobs:
         continue-on-error: true
         
 
+      - run: cat trivy-report.txt
+
       - run: |
-          echo "trivy-report<<EOF" >> $GITHUB_OUTPUT
+          echo "trivy_report<<EOF" >> $GITHUB_OUTPUT
           echo "$(cat trivy-report.txt)" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
@@ -45,5 +47,5 @@ jobs:
             ## Trivy Scan
             ### Trivy Scan Table
             ```plaintext
-            ${{ steps.trivy-scan.outputs.trivy-report }}
+            ${{ steps.trivy-scan.outputs.trivy_report }}
             ```
